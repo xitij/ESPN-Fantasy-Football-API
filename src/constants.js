@@ -256,6 +256,8 @@ export const nflTeamIdToNFLTeamAbbreviation = {
  *                                              game.)
  *
  *
+ * @property {number} fumbleRecoveryTouchdown When a player recovers a fumble and scores a
+ *                                            touchdown.
  * @property {number} fumbles Total fumbles, regardless of whether the fumble was recovered by the
  *                            opposing team (i.e "lost") or not
  * @property {number} lostFumbles Total fumbles lost (typically negative points) (applies to all
@@ -535,6 +537,7 @@ export const scoringItemToId = {
   receivingYardsAfterCatch: '59',
   receivingYardsPerReception: '60',
 
+  fumbleRecoveryTouchdown: '63',
   fumbles: '68',
   lostFumbles: '72',
   totalTurnovers: '73',
