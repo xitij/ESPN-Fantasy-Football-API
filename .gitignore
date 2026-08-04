@@ -19,6 +19,9 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# Local API exploration dumps (may contain league data)
+scratch/
+
 .DS_Store
 
 web.js*

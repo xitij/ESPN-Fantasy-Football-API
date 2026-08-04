@@ -32,7 +32,8 @@
     "prepublishOnly": "npm run build",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest --maxWorkers=2",
-    "test:integration": "jest --maxWorkers=2 --config=jest-integration-tests.config.js"
+    "test:integration": "jest --maxWorkers=2 --config=jest-integration-tests.config.js",
+    "explore:boxscore": "npm run build && node scripts/explore-boxscore.js"
   },
   "repository": {
     "type": "git",
