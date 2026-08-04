@@ -98,6 +98,16 @@ describe('BoxscorePlayer', () => {
       });
     });
 
+    describe('projectedPoints', () => {
+      describe('manualParse', () => {
+        test('sums numeric values on projectedPointBreakdown', () => {
+          const player = buildBoxscorePlayer(data);
+          const expectedPoints = _.sum(_.values(projectedStats.appliedStats));
+          expect(player.projectedPoints).toBe(expectedPoints);
+        });
+      });
+    });
+
     describe('rawStats', () => {
       describe('manualParse', () => {
         test('maps points to a PlayerStats instance', () => {
