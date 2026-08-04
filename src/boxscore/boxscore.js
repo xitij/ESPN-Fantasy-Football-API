@@ -15,6 +15,13 @@ class Boxscore extends BaseObject {
   /**
    * @typedef {object} BoxscoreMap
    *
+   * @property {string} playoffTierType The playoff tier for the matchup. Typical values include
+   *   `WINNERS_BRACKET`, `LOSERS_CONSOLATION_LADDER`, and `NONE` (regular season).
+   * @property {string} winner Which side won the matchup. Typical values include `HOME`, `AWAY`,
+   *   and `UNDECIDED` (e.g. in-progress matchups or playoff byes).
+   * @property {number|undefined} winnerTeamId The team id of the winning side. Derived from
+   *   `winner` and the home/away team ids. `undefined` when the winner is not `HOME` or `AWAY`.
+   *
    * @property {number} homeScore The total points scored by the home team.
    * @property {number} homeProjectedScore The projected total points scored by the home team.
    *   NOTE: This field is only populated in the boxscore for the current matchup period!
@@ -34,6 +41,23 @@ class Boxscore extends BaseObject {
    * @type {BoxscoreMap}
    */
   static responseMap = {
+    playoffTierType: 'playoffTierType',
+    winner: 'winner',
+    winnerTeamId: {
+      key: 'winner',
+      manualParse: (winner, data) => {
+        if (winner === 'HOME') {
+          return _.get(data, 'home.teamId');
+        }
+
+        if (winner === 'AWAY') {
+          return _.get(data, 'away.teamId');
+        }
+
+        return undefined;
+      }
+    },
+
     homeScore: {
       key: 'home',
       manualParse: (responseData) => (

@@ -29,6 +29,8 @@ describe('Boxscore', () => {
       };
 
       data = {
+        playoffTierType: 'NONE',
+        winner: 'HOME',
         home: {
           totalPoints: 123,
           teamId: 3,
@@ -44,6 +46,45 @@ describe('Boxscore', () => {
           }
         }
       };
+    });
+
+    describe('playoffTierType', () => {
+      test('maps to playoffTierType', () => {
+        const boxscore = buildBoxscore(data);
+        expect(boxscore.playoffTierType).toBe('NONE');
+      });
+    });
+
+    describe('winner', () => {
+      test('maps to winner', () => {
+        const boxscore = buildBoxscore(data);
+        expect(boxscore.winner).toBe('HOME');
+      });
+    });
+
+    describe('winnerTeamId', () => {
+      describe('manualParse', () => {
+        test('maps to home.teamId when winner is HOME', () => {
+          data.winner = 'HOME';
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.winnerTeamId).toBe(data.home.teamId);
+        });
+
+        test('maps to away.teamId when winner is AWAY', () => {
+          data.winner = 'AWAY';
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.winnerTeamId).toBe(data.away.teamId);
+        });
+
+        test('is undefined when winner is UNDECIDED', () => {
+          data.winner = 'UNDECIDED';
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.winnerTeamId).toBeUndefined();
+        });
+      });
     });
 
     describe('homeScore', () => {
