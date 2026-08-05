@@ -23,6 +23,13 @@ describe('Boxscore', () => {
               },
               statSourceId: 0,
               statSplitTypeId: 1
+            }, {
+              appliedStats: {
+                24: 4.2,
+                25: 1
+              },
+              statSourceId: 1,
+              statSplitTypeId: 1
             }]
           }
         }
@@ -153,6 +160,46 @@ describe('Boxscore', () => {
           _.forEach(boxscore.awayRoster, (player) => {
             expect(player).toBeInstanceOf(BoxscorePlayer);
           });
+        });
+      });
+    });
+
+    describe('homeProjectedScore', () => {
+      describe('manualParse', () => {
+        test('uses totalProjectedPointsLive when present', () => {
+          data.home.totalProjectedPointsLive = 111.5;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.homeProjectedScore).toBe(111.5);
+        });
+
+        test('sums starter projectedPoints when live projection is absent', () => {
+          delete data.home.totalProjectedPointsLive;
+
+          const benchPlayerData = _.cloneDeep(playerData);
+          benchPlayerData.lineupSlotId = 20; // Bench
+          data.home.rosterForCurrentScoringPeriod.entries = [playerData, benchPlayerData];
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.homeProjectedScore).toBe(boxscore.homeRoster[0].projectedPoints);
+        });
+      });
+    });
+
+    describe('awayProjectedScore', () => {
+      describe('manualParse', () => {
+        test('uses totalProjectedPointsLive when present', () => {
+          data.away.totalProjectedPointsLive = 98.25;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.awayProjectedScore).toBe(98.25);
+        });
+
+        test('sums starter projectedPoints when live projection is absent', () => {
+          delete data.away.totalProjectedPointsLive;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.awayProjectedScore).toBe(boxscore.awayRoster[0].projectedPoints);
         });
       });
     });
