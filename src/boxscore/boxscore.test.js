@@ -23,12 +23,21 @@ describe('Boxscore', () => {
               },
               statSourceId: 0,
               statSplitTypeId: 1
+            }, {
+              appliedStats: {
+                24: 4.2,
+                25: 1
+              },
+              statSourceId: 1,
+              statSplitTypeId: 1
             }]
           }
         }
       };
 
       data = {
+        playoffTierType: 'NONE',
+        winner: 'HOME',
         home: {
           totalPoints: 123,
           teamId: 3,
@@ -44,6 +53,45 @@ describe('Boxscore', () => {
           }
         }
       };
+    });
+
+    describe('playoffTierType', () => {
+      test('maps to playoffTierType', () => {
+        const boxscore = buildBoxscore(data);
+        expect(boxscore.playoffTierType).toBe('NONE');
+      });
+    });
+
+    describe('winner', () => {
+      test('maps to winner', () => {
+        const boxscore = buildBoxscore(data);
+        expect(boxscore.winner).toBe('HOME');
+      });
+    });
+
+    describe('winnerTeamId', () => {
+      describe('manualParse', () => {
+        test('maps to home.teamId when winner is HOME', () => {
+          data.winner = 'HOME';
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.winnerTeamId).toBe(data.home.teamId);
+        });
+
+        test('maps to away.teamId when winner is AWAY', () => {
+          data.winner = 'AWAY';
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.winnerTeamId).toBe(data.away.teamId);
+        });
+
+        test('is undefined when winner is UNDECIDED', () => {
+          data.winner = 'UNDECIDED';
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.winnerTeamId).toBeUndefined();
+        });
+      });
     });
 
     describe('homeScore', () => {
@@ -112,6 +160,46 @@ describe('Boxscore', () => {
           _.forEach(boxscore.awayRoster, (player) => {
             expect(player).toBeInstanceOf(BoxscorePlayer);
           });
+        });
+      });
+    });
+
+    describe('homeProjectedScore', () => {
+      describe('manualParse', () => {
+        test('uses totalProjectedPointsLive when present', () => {
+          data.home.totalProjectedPointsLive = 111.5;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.homeProjectedScore).toBe(111.5);
+        });
+
+        test('sums starter projectedPoints when live projection is absent', () => {
+          delete data.home.totalProjectedPointsLive;
+
+          const benchPlayerData = _.cloneDeep(playerData);
+          benchPlayerData.lineupSlotId = 20; // Bench
+          data.home.rosterForCurrentScoringPeriod.entries = [playerData, benchPlayerData];
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.homeProjectedScore).toBe(boxscore.homeRoster[0].projectedPoints);
+        });
+      });
+    });
+
+    describe('awayProjectedScore', () => {
+      describe('manualParse', () => {
+        test('uses totalProjectedPointsLive when present', () => {
+          data.away.totalProjectedPointsLive = 98.25;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.awayProjectedScore).toBe(98.25);
+        });
+
+        test('sums starter projectedPoints when live projection is absent', () => {
+          delete data.away.totalProjectedPointsLive;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.awayProjectedScore).toBe(boxscore.awayRoster[0].projectedPoints);
         });
       });
     });

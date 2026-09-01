@@ -22,8 +22,11 @@ class BoxscorePlayer extends Player {
    * @property {Player} player The player model representing the NFL player.
    * @property {string} rosteredPosition The position the player is slotted at in the fantasy lineup
    * @property {number} totalPoints The total points scored by the player.
+   * @property {number} projectedPoints The sum of the player's projected fantasy point breakdown.
    * @property {PlayerStats} pointBreakdown The PlayerStats model with the points scored by the
    *                                        player.
+   * @property {PlayerStats} projectedPointBreakdown The PlayerStats model with the projected
+   *                                                  points for the player.
    * @property {PlayerStats} rawStats The PlayerStats model with the raw statistics registered by
    *                                  the player.
    */
@@ -63,6 +66,20 @@ class BoxscorePlayer extends Player {
         statSourceId: 1,
         statSplitTypeId: 1
       })
+    },
+    projectedPoints: {
+      key: 'stats',
+      defer: true,
+      manualParse: (responseData, data, rawData, constructorParams, instance) => {
+        const breakdown = instance.projectedPointBreakdown;
+        if (!breakdown) {
+          return undefined;
+        }
+
+        return _.sum(
+          _.filter(_.values(_.omit(breakdown, ['usesPoints'])), _.isNumber)
+        );
+      }
     },
     rawStats: {
       key: 'stats',

@@ -1,13 +1,37 @@
 {
-  "name": "espn-fantasy-football-api",
-  "version": "2.0.1",
+  "name": "@xitij/espn-fantasy-football-api",
+  "version": "2.1.0",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "description": "A Javascript API to connect to ESPN's fantasy football API",
   "main": "web.js",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./web.js"
+    },
+    "./node": {
+      "types": "./types/index.d.ts",
+      "default": "./node.js"
+    },
+    "./web-dev": {
+      "types": "./types/index.d.ts",
+      "default": "./web-dev.js"
+    },
+    "./node-dev": {
+      "types": "./types/index.d.ts",
+      "default": "./node-dev.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "web.js",
     "node.js",
     "web-dev.js",
-    "node-dev.js"
+    "node-dev.js",
+    "types"
   ],
   "author": {
     "name": "Mike Kreiser",
@@ -32,16 +56,18 @@
     "prepublishOnly": "npm run build",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest --maxWorkers=2",
-    "test:integration": "jest --maxWorkers=2 --config=jest-integration-tests.config.js"
+    "test:integration": "jest --maxWorkers=2 --config=jest-integration-tests.config.js",
+    "typecheck": "tsc -p tsconfig.json",
+    "explore:boxscore": "npm run build && node scripts/explore-boxscore.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mkreiser/ESPN-Fantasy-Football-API.git"
+    "url": "git+https://github.com/xitij/ESPN-Fantasy-Football-API.git"
   },
   "bugs": {
-    "url": "https://github.com/mkreiser/ESPN-Fantasy-Football-API/issues"
+    "url": "https://github.com/xitij/ESPN-Fantasy-Football-API/issues"
   },
-  "homepage": "https://github.com/mkreiser/ESPN-Fantasy-Football-API#readme",
+  "homepage": "https://github.com/xitij/ESPN-Fantasy-Football-API#readme",
   "keywords": [
     "api",
     "api-client",
@@ -83,6 +109,7 @@
     "jest": "29.6.4",
     "jsdoc": "^3.6.6",
     "q": "^1.5.1",
+    "typescript": "^5.9.3",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   }
