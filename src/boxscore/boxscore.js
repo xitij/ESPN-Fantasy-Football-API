@@ -25,7 +25,7 @@ class Boxscore extends BaseObject {
    *
    * @param  {number|undefined} liveProjectedScore ESPN `totalProjectedPointsLive` value.
    * @param  {BoxscorePlayer[]} [roster=[]] The side's roster.
-   * @returns {number}
+   * @returns {number} The projected score for the side.
    */
   static _getProjectedScore(liveProjectedScore, roster = []) {
     if (_.isNumber(liveProjectedScore)) {

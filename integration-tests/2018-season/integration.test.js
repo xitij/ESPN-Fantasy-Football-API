@@ -4,7 +4,12 @@ import { Client } from '../../src/index';
 
 jest.setTimeout(10000);
 
-describe('2018 season client integration tests', () => {
+const hasLeagueCredentials = Boolean(
+  process.env.LEAGUE_ID && process.env.ESPN_S2 && process.env.SWID
+);
+const describeIfConfigured = hasLeagueCredentials ? describe : describe.skip;
+
+describeIfConfigured('2018 season client integration tests', () => {
   let client;
   let leagueId;
   let seasonId;
