@@ -21,6 +21,10 @@ jobs:
           scope: '@xitij'
       - name: Install Dependencies
         run: npm ci
+      # JS-DevTools/npm-publish disables lifecycle scripts by default, so
+      # prepublishOnly (webpack) never runs. Build the bundles explicitly.
+      - name: Build bundles
+        run: npm run build
       - name: Publish
         uses: JS-DevTools/npm-publish@v4
         with:
