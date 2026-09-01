@@ -1,0 +1,27 @@
+# Prefer .npmignore over .gitignore for packing so webpack bundles
+# (node.js, web.js, …) are not excluded from the published tarball.
+# package.json "files" still controls what is included.
+
+node_modules/
+coverage/
+docs/
+scratch/
+src/
+integration-tests/
+scripts/
+type-tests/
+.github/
+*.test.js
+*.stubs.js
+.env
+.npmrc
+.cspellcache
+.eslintcache
+*.map
+babel.config.js
+webpack.config.js
+jest.config.js
+jest-integration-tests.config.js
+tsconfig.json
+cspell.json
+.eslintrc.json
