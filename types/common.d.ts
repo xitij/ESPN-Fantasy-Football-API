@@ -42,6 +42,7 @@ export type PlayerAvailabilityStatus =
 
 export type PlayoffTierType =
   | 'WINNERS_BRACKET'
+  | 'WINNERS_CONSOLATION_LADDER'
   | 'LOSERS_CONSOLATION_LADDER'
   | 'NONE'
   | string;
