@@ -27,6 +27,8 @@ async function example(): Promise<void> {
 
   const first: Boxscore | undefined = boxscores[0];
   const winnerTeamId: number | undefined = first?.winnerTeamId;
+  const homeProjectedScore: number | undefined = first?.homeProjectedScore;
+  const homeProjectedScoreLive: number | undefined = first?.homeProjectedScoreLive;
   const player: BoxscorePlayer | undefined = first?.homeRoster?.[0];
   const projected: number | undefined = player?.projectedPoints;
   const breakdown: PlayerStats | undefined = player?.projectedPointBreakdown;
@@ -46,6 +48,8 @@ async function example(): Promise<void> {
   const basePlayer: Player = new Player({ seasonId: 2025, scoringPeriodId: 1 });
 
   void winnerTeamId;
+  void homeProjectedScore;
+  void homeProjectedScoreLive;
   void projected;
   void breakdown;
   void teams;

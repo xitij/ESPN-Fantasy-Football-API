@@ -5,6 +5,12 @@ import BoxscorePlayer from '../boxscore-player/boxscore-player';
 import Boxscore from './boxscore';
 
 describe('Boxscore', () => {
+  describe('_getProjectedScore', () => {
+    test('defaults roster to an empty array when omitted', () => {
+      expect(Boxscore._getProjectedScore(undefined)).toBe(0);
+    });
+  });
+
   describe('responseMap', () => {
     const buildBoxscore = (data, options) => Boxscore.buildFromServer(data, options);
 
@@ -166,19 +172,24 @@ describe('Boxscore', () => {
 
     describe('homeProjectedScore', () => {
       describe('manualParse', () => {
-        test('uses totalProjectedPointsLive when present', () => {
-          data.home.totalProjectedPointsLive = 111.5;
+        test('uses totalProjectedPoints when present', () => {
+          data.home.totalProjectedPoints = 111.5;
+          data.home.totalProjectedPointsLive = 118.25;
 
           const boxscore = buildBoxscore(data);
           expect(boxscore.homeProjectedScore).toBe(111.5);
         });
 
-        test('sums starter projectedPoints when live projection is absent', () => {
-          delete data.home.totalProjectedPointsLive;
+        test('sums starter projectedPoints when totalProjectedPoints is absent', () => {
+          delete data.home.totalProjectedPoints;
 
           const benchPlayerData = _.cloneDeep(playerData);
           benchPlayerData.lineupSlotId = 20; // Bench
-          data.home.rosterForCurrentScoringPeriod.entries = [playerData, benchPlayerData];
+          const irPlayerData = _.cloneDeep(playerData);
+          irPlayerData.lineupSlotId = 21; // IR
+          data.home.rosterForCurrentScoringPeriod.entries = [
+            playerData, benchPlayerData, irPlayerData
+          ];
 
           const boxscore = buildBoxscore(data);
           expect(boxscore.homeProjectedScore).toBe(boxscore.homeRoster[0].projectedPoints);
@@ -186,20 +197,57 @@ describe('Boxscore', () => {
       });
     });
 
+    describe('homeProjectedScoreLive', () => {
+      describe('manualParse', () => {
+        test('maps to totalProjectedPointsLive when present', () => {
+          data.home.totalProjectedPointsLive = 118.25;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.homeProjectedScoreLive).toBe(118.25);
+        });
+
+        test('is undefined when totalProjectedPointsLive is absent', () => {
+          delete data.home.totalProjectedPointsLive;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.homeProjectedScoreLive).toBeUndefined();
+        });
+      });
+    });
+
     describe('awayProjectedScore', () => {
       describe('manualParse', () => {
-        test('uses totalProjectedPointsLive when present', () => {
-          data.away.totalProjectedPointsLive = 98.25;
+        test('uses totalProjectedPoints when present', () => {
+          data.away.totalProjectedPoints = 98.25;
+          data.away.totalProjectedPointsLive = 104.5;
 
           const boxscore = buildBoxscore(data);
           expect(boxscore.awayProjectedScore).toBe(98.25);
         });
 
-        test('sums starter projectedPoints when live projection is absent', () => {
-          delete data.away.totalProjectedPointsLive;
+        test('sums starter projectedPoints when totalProjectedPoints is absent', () => {
+          delete data.away.totalProjectedPoints;
 
           const boxscore = buildBoxscore(data);
           expect(boxscore.awayProjectedScore).toBe(boxscore.awayRoster[0].projectedPoints);
+        });
+      });
+    });
+
+    describe('awayProjectedScoreLive', () => {
+      describe('manualParse', () => {
+        test('maps to totalProjectedPointsLive when present', () => {
+          data.away.totalProjectedPointsLive = 104.5;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.awayProjectedScoreLive).toBe(104.5);
+        });
+
+        test('is undefined when totalProjectedPointsLive is absent', () => {
+          delete data.away.totalProjectedPointsLive;
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore.awayProjectedScoreLive).toBeUndefined();
         });
       });
     });

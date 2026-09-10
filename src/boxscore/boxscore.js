@@ -19,17 +19,16 @@ class Boxscore extends BaseObject {
   static _nonStarterPositions = ['Bench', 'IR'];
 
   /**
-   * Returns the projected team score, preferring ESPN's live team projection when present.
-   * Falls back to summing starter `projectedPoints` values on the roster.
+   * Returns ESPN's team projection when present; otherwise sums starter `projectedPoints`.
    * @private
    *
-   * @param  {number|undefined} liveProjectedScore ESPN `totalProjectedPointsLive` value.
+   * @param  {number|undefined} projectedScore ESPN `totalProjectedPoints` value.
    * @param  {BoxscorePlayer[]} [roster=[]] The side's roster.
    * @returns {number} The projected score for the side.
    */
-  static _getProjectedScore(liveProjectedScore, roster = []) {
-    if (_.isNumber(liveProjectedScore)) {
-      return liveProjectedScore;
+  static _getProjectedScore(projectedScore, roster = []) {
+    if (_.isNumber(projectedScore)) {
+      return projectedScore;
     }
 
     const starters = _.reject(roster, (player) => (
@@ -53,16 +52,20 @@ class Boxscore extends BaseObject {
    *
    * @property {number} homeScore The total points scored by the home team.
    * @property {number} homeProjectedScore The projected total points scored by the home team.
-   *   Uses ESPN's live team projection when available; otherwise sums starter
+   *   Uses ESPN's `totalProjectedPoints` when available; otherwise sums starter
    *   `BoxscorePlayer#projectedPoints` values (Bench/IR excluded).
+   * @property {number} homeProjectedScoreLive The live projected total points scored by the home
+   *   team. Only present when ESPN provides `totalProjectedPointsLive` (in-progress matchups).
    * @property {number} homeTeamId The home team's id. Can be used to load a cached Team.
    * @property {BoxscorePlayer[]} homeRoster The home team's roster, containing player info and
    *                                         stats.
    *
    * @property {number} awayScore The total points scored by the away team.
    * @property {number} awayProjectedScore The projected total points scored by the away team.
-   *   Uses ESPN's live team projection when available; otherwise sums starter
+   *   Uses ESPN's `totalProjectedPoints` when available; otherwise sums starter
    *   `BoxscorePlayer#projectedPoints` values (Bench/IR excluded).
+   * @property {number} awayProjectedScoreLive The live projected total points scored by the away
+   *   team. Only present when ESPN provides `totalProjectedPointsLive` (in-progress matchups).
    * @property {number} awayTeamId The away team's id. Can be used to load a cached Team.
    * @property {BoxscorePlayer[]} awayRoster The away team's roster, containing player info and
    *                                         stats.
@@ -105,10 +108,16 @@ class Boxscore extends BaseObject {
       )
     },
     homeProjectedScore: {
-      key: 'home.totalProjectedPointsLive',
+      key: 'home.totalProjectedPoints',
       defer: true,
-      manualParse: (liveProjectedScore, data, rawData, constructorParams, instance) => (
-        Boxscore._getProjectedScore(liveProjectedScore, instance.homeRoster)
+      manualParse: (projectedScore, data, rawData, constructorParams, instance) => (
+        Boxscore._getProjectedScore(projectedScore, instance.homeRoster)
+      )
+    },
+    homeProjectedScoreLive: {
+      key: 'home.totalProjectedPointsLive',
+      manualParse: (liveProjectedScore) => (
+        _.isNumber(liveProjectedScore) ? liveProjectedScore : undefined
       )
     },
 
@@ -128,10 +137,16 @@ class Boxscore extends BaseObject {
       )
     },
     awayProjectedScore: {
-      key: 'away.totalProjectedPointsLive',
+      key: 'away.totalProjectedPoints',
       defer: true,
-      manualParse: (liveProjectedScore, data, rawData, constructorParams, instance) => (
-        Boxscore._getProjectedScore(liveProjectedScore, instance.awayRoster)
+      manualParse: (projectedScore, data, rawData, constructorParams, instance) => (
+        Boxscore._getProjectedScore(projectedScore, instance.awayRoster)
+      )
+    },
+    awayProjectedScoreLive: {
+      key: 'away.totalProjectedPointsLive',
+      manualParse: (liveProjectedScore) => (
+        _.isNumber(liveProjectedScore) ? liveProjectedScore : undefined
       )
     }
   };
