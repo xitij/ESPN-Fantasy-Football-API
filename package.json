@@ -1,6 +1,6 @@
 {
   "name": "@xitij/espn-fantasy-football-api",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },

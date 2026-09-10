@@ -9,20 +9,30 @@ export declare class Boxscore {
   homeScore?: number;
   /**
    * Projected total points for the home team.
-   * Uses ESPN's live team projection when available; otherwise sums starter
+   * Uses ESPN's `totalProjectedPoints` when available; otherwise sums starter
    * `BoxscorePlayer.projectedPoints` values (Bench/IR excluded).
    */
   homeProjectedScore?: number;
+  /**
+   * Live projected total points for the home team.
+   * Only present when ESPN provides `totalProjectedPointsLive` (in-progress matchups).
+   */
+  homeProjectedScoreLive?: number;
   homeTeamId?: number;
   homeRoster?: BoxscorePlayer[];
 
   awayScore?: number;
   /**
    * Projected total points for the away team.
-   * Uses ESPN's live team projection when available; otherwise sums starter
+   * Uses ESPN's `totalProjectedPoints` when available; otherwise sums starter
    * `BoxscorePlayer.projectedPoints` values (Bench/IR excluded).
    */
   awayProjectedScore?: number;
+  /**
+   * Live projected total points for the away team.
+   * Only present when ESPN provides `totalProjectedPointsLive` (in-progress matchups).
+   */
+  awayProjectedScoreLive?: number;
   awayTeamId?: number;
   awayRoster?: BoxscorePlayer[];
 

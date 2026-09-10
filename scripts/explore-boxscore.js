@@ -78,6 +78,7 @@ function findUnmappedSideKeys(matchup) {
     'totalPointsLive',
     'totalPoints',
     'totalProjectedPointsLive',
+    'totalProjectedPoints',
     'teamId',
     'rosterForCurrentScoringPeriod'
   ]);

@@ -105,6 +105,16 @@ describe('BoxscorePlayer', () => {
           const expectedPoints = _.sum(_.values(projectedStats.appliedStats));
           expect(player.projectedPoints).toBe(expectedPoints);
         });
+
+        test('is undefined when projectedPointBreakdown is missing', () => {
+          jest.spyOn(
+            BoxscorePlayer.responseMap.projectedPointBreakdown,
+            'manualParse'
+          ).mockReturnValue(undefined);
+
+          const player = buildBoxscorePlayer(data);
+          expect(player.projectedPoints).toBeUndefined();
+        });
       });
     });
 
